@@ -6,12 +6,7 @@ const path = require('path');
 const Portfolio = require('../models/Portfolio');
 const auth = require('../middleware/auth');
 
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: function (req, file, cb) {
-        cb(null, 'profile-' + Date.now() + path.extname(file.originalname));
-    }
-});
+const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     limits: { fileSize: 5000000 },
@@ -63,7 +58,10 @@ router.put('/credentials', auth, async (req, res) => {
 router.post('/upload-photo', auth, upload.single('photo'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
-        const photoUrl = `/uploads/${req.file.filename}`;
+        
+        // Convert to Base64 String
+        const base64String = req.file.buffer.toString('base64');
+        const photoUrl = `data:${req.file.mimetype};base64,${base64String}`;
         
         let portfolio = await Portfolio.findOne();
         if (portfolio) {
@@ -81,7 +79,10 @@ router.post('/upload-photo', auth, upload.single('photo'), async (req, res) => {
 router.post('/upload-resume', auth, upload.single('resume'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
-        const resumeUrl = `/uploads/${req.file.filename}`;
+        
+        // Convert to Base64 String
+        const base64String = req.file.buffer.toString('base64');
+        const resumeUrl = `data:${req.file.mimetype};base64,${base64String}`;
         
         let portfolio = await Portfolio.findOne();
         if (portfolio) {
