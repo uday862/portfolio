@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Gadige Uday Kumar - Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e2e8f0;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Resume Card - Print optimized */
+        .resume {
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        /* Inner padding */
+        .resume-inner {
+            padding: 40px 45px;
+        }
+
+        /* Header Section */
+        .header {
+            border-bottom: 3px solid #1e40af;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+        }
+
+        .name {
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .degree {
+            font-size: 18px;
+            font-weight: 500;
+            color: #2c3e66;
+            margin-bottom: 12px;
+            border-left: 4px solid #2563eb;
+            padding-left: 12px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            row-gap: 8px;
+            font-size: 14px;
+            color: #1e293b;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 14px;
+            margin-top: 12px;
+        }
+
+        .contact-info span,
+        .contact-info a {
+            color: #1e40af;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            border-left: 5px solid #2563eb;
+            padding-left: 14px;
+            margin: 28px 0 16px 0;
+            letter-spacing: -0.2px;
+        }
+
+        .first-section {
+            margin-top: 8px;
+        }
+
+        /* Summary text */
+        .summary-text {
+            background: #f1f5f9;
+            padding: 16px 20px;
+            border-radius: 18px;
+            line-height: 1.5;
+            color: #1e293b;
+            font-size: 15px;
+            text-align: justify;
+        }
+
+        /* Education block */
+        .edu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .edu-item {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 10px;
+        }
+
+        .edu-left {
+            font-weight: 600;
+            color: #0f172a;
+            width: 55%;
+        }
+
+        .edu-right {
+            color: #2d3a5e;
+            font-weight: 500;
+            width: 20%;
+        }
+
+        .edu-year {
+            color: #475569;
+            width: 20%;
+            text-align: right;
+        }
+
+        /* skills & strengths row */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 5px;
+        }
+
+        .skills-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .skill-cat {
+            font-weight: 700;
+            margin: 12px 0 6px 0;
+            color: #1e293b;
+            font-size: 15px;
+        }
+
+        .skill-items {
+            color: #2c3e66;
+            line-height: 1.45;
+            font-size: 14px;
+        }
+
+        .strengths-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .strengths-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .strengths-list li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        /* Projects */
+        .project {
+            margin-bottom: 28px;
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 6px;
+        }
+
+        .project-tech {
+            font-weight: 500;
+            color: #2563eb;
+            font-size: 13px;
+            background: #eef2ff;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .project-desc {
+            padding-left: 12px;
+            border-left: 2px solid #cbd5e1;
+            margin-top: 8px;
+        }
+
+        .project-desc p {
+            margin-bottom: 8px;
+            line-height: 1.45;
+            font-size: 14px;
+            color: #1f2a44;
+        }
+
+        .project-desc ul {
+            margin-left: 20px;
+            margin-bottom: 6px;
+        }
+
+        .project-desc li {
+            margin-bottom: 5px;
+            line-height: 1.4;
+            font-size: 14px;
+        }
+
+        /* achievements + awards */
+        .achievement-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .achievement-card {
+            background: #f8fafc;
+            padding: 12px 18px;
+            border-radius: 20px;
+            flex: 1;
+            border-left: 3px solid #2563eb;
+        }
+
+        .achievement-card strong {
+            color: #0f172a;
+        }
+
+        /* additional devops + system design row */
+        .extra-skills {
+            background: #f1f5f9;
+            padding: 14px 20px;
+            border-radius: 20px;
+            margin: 20px 0 10px;
+            font-size: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        hr {
+            margin: 10px 0;
+            border: 0;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        /* print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .resume {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .resume-inner {
+                padding: 0.4in 0.35in;
+            }
+
+            .contact-info {
+                background: #f9f9fb;
+                break-inside: avoid;
+            }
+
+            .project,
+            .edu-item,
+            .summary-text {
+                break-inside: avoid;
+            }
+
+            .section-title {
+                margin-top: 20px;
+            }
+
+            a {
+                text-decoration: none;
+                color: black;
+            }
+        }
+
+        /* responsiveness */
+        @media (max-width: 700px) {
+            .resume-inner {
+                padding: 24px 20px;
+            }
+
+            .name {
+                font-size: 28px;
+            }
+
+            .edu-left,
+            .edu-right,
+            .edu-year {
+                width: 100%;
+                text-align: left;
+                margin-bottom: 4px;
+            }
+
+            .edu-item {
+                flex-direction: column;
+            }
+
+            .skills-grid {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="resume">
+        <div class="resume-inner">
+            <!-- HEADER with name & contact -->
+            <div class="header">
+                <div class="name">GADIGE UDAY KUMAR</div>
+                <div class="degree">Bachelor of Technology (B.Tech) – Computer Science Engineering</div>
+                <div class="contact-info">
+                    <div class="contact-item">📧 gadigeuday111@gmail.com</div>
+                    <div class="contact-item">📞 +919912050265</div>
+                    <div class="contact-item">📍 Hyderabad</div>
+                    <div class="contact-item">🔗 <a href="#">leetcode.com/u/gadigeuday123/</a></div>
+                    <div class="contact-item">🐙 <a href="#">github.com/uday862</a></div>
+                    <div class="contact-item">💼 <a href="#">linkedin.com/in/gadigeuday</a></div>
+                    <div class="contact-item">🎂 03-02-2004</div>
+                </div>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="section-title first-section">SUMMARY</div>
+            <div class="summary-text">
+                Computer Science Engineering student with strong expertise in <strong>Java, C++, Python, and full-stack
+                    development</strong>.
+                Experienced in building end-to-end applications integrating machine learning models with scalable web
+                platforms.
+                Proficient in <strong>DevOps practices, cloud deployment (AWS), and system design fundamentals</strong>.
+                Passionate about solving complex problems and delivering impactful, real-world software solutions.
+            </div>
+
+            <!-- EDUCATION -->
+            <div class="section-title">EDUCATION</div>
+            <div class="edu-grid">
+                <div class="edu-item">
+                    <div class="edu-left"><strong>B.Tech in Computer Science Engineering</strong>, KMIT, Hyderabad</div>
+                    <div class="edu-right">CGPA: 8.9</div>
+                    <div class="edu-year">2023 – 2027</div>
+                </div>
+                <div class="edu-item">
+                    <div class="edu-left"><strong>Board of Intermediate</strong>, CVRAMAN JUNIOR COLLEGE, Wanaparthy
+                    </div>
+                    <div class="edu-right">Scored: 987/1000</div>
+                    <div class="edu-year">2020 – 2022</div>
+                </div>
+                <div class="edu-item">
+                    <div class="edu-left"><strong>Board of Secondary Schooling</strong>, BGR High School, Ieeja-Gadwal
+                    </div>
+                    <div class="edu-right">GPA: 10</div>
+                    <div class="edu-year">2019 – 2020</div>
+                </div>
+            </div>
+
+            <!-- TECHNICAL SKILLS & INTERESTS (enhanced) -->
+            <div class="section-title">TECHNICAL SKILLS</div>
+            <div class="skills-grid">
+                <div class="skills-col">
+                    <div class="skill-cat">💻 Languages</div>
+                    <div class="skill-items">Java, C++, Python</div>
+                    <div class="skill-cat">🗄️ Databases</div>
+                    <div class="skill-items">MySQL, MongoDB</div>
+                    <div class="skill-cat">🌐 Web & Frameworks</div>
+                    <div class="skill-items">HTML, CSS, JavaScript, MERN Stack (React, Node, Express, MongoDB)</div>
+                </div>
+                <div class="skills-col">
+                    <div class="skill-cat">🤖 ML / Deep Learning</div>
+                    <div class="skill-items">Model Development, YOLO, OpenCV, Scikit-learn, Logistic Regression, Random
+                        Forest, Flask</div>
+                    <div class="skill-cat">☁️ DevOps & Cloud</div>
+                    <div class="skill-items">Git, GitHub, CI/CD basics, AWS (EC2, S3, Lambda fundamentals)</div>
+                    <div class="skill-cat">🏗️ System Design</div>
+                    <div class="skill-items">Basics of scalable architecture, load balancing, database design principles
+                    </div>
+                </div>
+            </div>
+
+            <!-- STRENGTHS -->
+            <div class="section-title">STRENGTHS</div>
+            <ul class="strengths-list">
+                <li>Solid understanding of <strong>algorithms, data structures, and designing scalable software
+                        systems</strong></li>
+                <li>Proficient in <strong>DevOps workflows, version control (Git/GitHub)</strong>, and cloud deployment
+                    (AWS)</li>
+                <li>Capable of rapidly learning and working with emerging technologies and frameworks</li>
+                <li>Ability to deploy scalable applications and seamlessly integrate ML models to enhance functionality
+                </li>
+            </ul>
+
+            <!-- ACHIEVEMENTS (Leetcode + Hackathons) -->
+            <div class="section-title">ACHIEVEMENTS</div>
+            <div class="achievement-list">
+                <div class="achievement-card"><strong>🏆 450+ LeetCode Problems</strong><br>Solved over 450 data
+                    structures & algorithms problems, demonstrating strong analytical and coding proficiency.</div>
+                <div class="achievement-card"><strong>⚡ Hackathon Participant</strong><br>Actively participated in
+                    multiple hackathons, building innovative software solutions under time constraints and collaborating
+                    effectively.</div>
+            </div>
+
+            <!-- PERSONAL PROJECTS (enhanced with DevOps/Git/GitHub and system design mentions) -->
+            <div class="section-title">PERSONAL PROJECTS</div>
+
+            <div class="project">
+                <div class="project-title">
+                    IPL Match Outcome Prediction
+                    <span class="project-tech">ML • Python • Scikit-learn • Flask • Git</span>
+                </div>
+                <div class="project-desc">
+                    <p>Built a machine learning pipeline to predict IPL match results using historical data. Applied
+                        Logistic Regression and Random Forest with feature engineering and preprocessing. Evaluated
+                        performance using accuracy and log-loss.</p>
+                    <ul>
+                        <li>Deployed the model as a live web application on Render:
+                            <strong>ipl-match-prediction-kq51.onrender.com</strong>
+                        </li>
+                        <li>Used <strong>Git/GitHub</strong> for version control and collaborated on iterative model
+                            improvements.</li>
+                        <li>Tech stack: Python, Scikit-learn, Flask, HTML/CSS, Git workflows.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="project">
+                <div class="project-title">
+                    AI-Based Attendance Tracker (YOLO + Manual)
+                    <span class="project-tech">YOLOv8 • React • Node • Flask • MongoDB • Git</span>
+                </div>
+                <div class="project-desc">
+                    <p>Designed an AI-powered attendance system using YOLOv8 for real-time face detection and
+                        recognition. Integrated React.js frontend, Node.js middleware, and Flask + OpenCV backend.
+                        Implemented dual modes: automatic recognition + manual fallback.</p>
+                    <ul>
+                        <li>Built dashboards for Admin/Teachers with secure MongoDB storage and CSV report exports.</li>
+                        <li>Supported video uploads and touchless attendance — research project at KMIT, Hyderabad.</li>
+                        <li>Used <strong>GitHub for version control, feature branching, and CI/CD awareness</strong> for
+                            deployment readiness.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="project">
+                <div class="project-title">
+                    FinTweet – Financial Tweet Sentiment Analysis <span class="project-tech"></span>
+                    <span class="project-tech">MERN • Python • VADER • SOFNN • Twitter API • AWS (in progress)</span>
+                </div>
+                <div class="project-desc">
+                    <p>Developing a sentiment analysis system for financial tweets using VADER, TextBlob, and SOFNN to
+                        classify tweets into positive, negative, and neutral categories. Implementing text preprocessing
+                        and feature extraction techniques.</p>
+                    <ul>
+                        <li>Building a <strong>MERN stack web application</strong> enabling users to search
+                            stock/company keywords and view real-time sentiment insights.</li>
+                        <li>Integrating <strong>Git/GitHub</strong> for code management, planning to deploy backend
+                            services on <strong>AWS (EC2/S3)</strong> for scalability.</li>
+                        <li>Exploring system design basics: decoupling ML microservice from frontend, API rate limiting
+                            considerations.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Software Engineering Fundamentals / Core -->
+            <div class="section-title">SOFTWARE ENGINEERING FUNDAMENTALS</div>
+            <div class="extra-skills">
+                <span>📘 DSA (Data Structures & Algorithms)</span>
+                <span>🧩 Object-Oriented Programming (OOP)</span>
+                <span>⚙️ Operating Systems (OS)</span>
+                <span>🌍 System Design Basics</span>
+                <span>🐙 Git & GitHub</span>
+                <span>☁️ AWS Essentials</span>
+            </div>
+
+            <!-- Additional DevOps & System Design highlights -->
+            <div class="section-title">DEVOPS & SYSTEM DESIGN HIGHLIGHTS</div>
+            <div class="summary-text" style="background:#fefce8; margin-bottom: 8px;">
+                ✅ <strong>DevOps Mindset:</strong> Version control with Git, collaborative GitHub workflows,
+                understanding of CI/CD pipelines and deployment automation. <br>
+                ✅ <strong>AWS Exposure:</strong> Familiar with EC2 instances, S3 storage, and basics of serverless
+                deployment (Lambda). Currently applying AWS concepts in FinTweet project.<br>
+                ✅ <strong>System Design Fundamentals:</strong> Knowledge of horizontal scaling, database indexing, API
+                design patterns, and microservices communication. Focused on building modular and maintainable
+                architectures.
+            </div>
+
+            <!-- footer line (optional) -->
+            <hr>
+            <div style="font-size: 11px; text-align: center; color: #475569; margin-top: 12px;">
+                📄 Portfolio & up-to-date repositories: github.com/uday862 | LeetCode (450+ problems) | open to software
+                engineering roles
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
