@@ -17,4 +17,25 @@ router.get('/portfolio', async (req, res) => {
     }
 });
 
+const Message = require('../models/Message');
+
+// POST /api/contact
+// Submit a contact message
+router.post('/contact', async (req, res) => {
+    try {
+        const { name, email, subject, message } = req.body;
+        if (!name || !email || !message) {
+            return res.status(400).json({ message: 'Name, email, and message are required.' });
+        }
+
+        const newMessage = new Message({ name, email, subject, message });
+        await newMessage.save();
+
+        res.status(201).json({ message: 'Message sent successfully!' });
+    } catch (error) {
+        console.error('Error saving contact message:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router;

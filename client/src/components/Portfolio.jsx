@@ -7,6 +7,35 @@ function Portfolio() {
   const [activeTab, setActiveTab] = useState('Home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactSubject, setContactSubject] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [contactStatus, setContactStatus] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setContactStatus('Sending...');
+    try {
+        const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: contactName, email: contactEmail, subject: contactSubject, message: contactMessage })
+        });
+        if (res.ok) {
+            setContactStatus('✅ Message sent successfully! I will get back to you soon.');
+            setContactName(''); setContactEmail(''); setContactSubject(''); setContactMessage('');
+        } else {
+            setContactStatus('❌ Failed to send message. Please try again.');
+        }
+    } catch (err) {
+        setContactStatus('❌ Network error. Please try again.');
+    }
+    setIsSubmitting(false);
+  };
+
   useEffect(() => {
     fetch('/api/portfolio')
       .then(res => res.json())
@@ -32,7 +61,7 @@ function Portfolio() {
   const zoomLevel = data.profile.photoSize ? data.profile.photoSize / 100 : 1;
 
   const showSection = (sectionName) => activeTab === 'Home' || activeTab === sectionName;
-  const tabs = ['Home', 'Education', 'Skills', 'Projects', 'Achievements'];
+  const tabs = ['Home', 'Education', 'Skills', 'Projects', 'Achievements', 'Contact'];
 
   return (
     <div className="portfolio-layout">
@@ -191,6 +220,45 @@ function Portfolio() {
                   </li>
                 ))}
               </ul>
+            </section>
+          )}
+
+          {/* Contact Section */}
+          {showSection('Contact') && (
+            <section className="glass-card" style={{ marginTop: activeTab !== 'Home' ? '0' : '40px', marginBottom: '40px' }}>
+              <h2 className="section-title">Get In Touch</h2>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '25px' }}>Interested in working together or have a question? Feel free to drop a message below. I monitor this inbox actively.</p>
+              
+              <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <label style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '500' }}>Your Name</label>
+                    <input type="text" value={contactName} onChange={e => setContactName(e.target.value)} required style={{ padding: '14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-primary)', outline: 'none' }} placeholder="John Doe" />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <label style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '500' }}>Your Email</label>
+                    <input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} required style={{ padding: '14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-primary)', outline: 'none' }} placeholder="john@example.com" />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '500' }}>Subject</label>
+                  <input type="text" value={contactSubject} onChange={e => setContactSubject(e.target.value)} required style={{ padding: '14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-primary)', outline: 'none' }} placeholder="Job Opportunity" />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '500' }}>Message</label>
+                  <textarea value={contactMessage} onChange={e => setContactMessage(e.target.value)} required rows="5" style={{ padding: '14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-primary)', outline: 'none', resize: 'vertical' }} placeholder="Write your message here..."></textarea>
+                </div>
+                
+                <button type="submit" disabled={isSubmitting} className="project-link" style={{ alignSelf: 'flex-start', padding: '12px 30px', fontSize: '16px', background: isSubmitting ? 'var(--text-muted)' : 'var(--accent-gradient)', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
+                  {isSubmitting ? 'Sending...' : 'Send Message 🚀'}
+                </button>
+
+                {contactStatus && (
+                  <div style={{ marginTop: '10px', padding: '12px', background: 'var(--icon-bg)', borderRadius: '8px', color: 'var(--text-primary)', borderLeft: '4px solid var(--accent-primary)', fontSize: '14px', fontWeight: '500' }}>
+                    {contactStatus}
+                  </div>
+                )}
+              </form>
             </section>
           )}
 

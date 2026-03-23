@@ -6,6 +6,8 @@ function Admin() {
     const [loginPass, setLoginPass] = useState('');
     const [status, setStatus] = useState('');
     
+    const [messages, setMessages] = useState([]);
+
     // Core Profile data
     const [name, setName] = useState('');
     const [title, setTitle] = useState('');
@@ -45,8 +47,36 @@ function Admin() {
     const [newAdminPass, setNewAdminPass] = useState('');
 
     useEffect(() => {
-        if (token) fetchData();
+        if (token) {
+            fetchData();
+            fetchMessages();
+        }
     }, [token]);
+
+    const fetchMessages = async () => {
+        try {
+            const res = await fetch('/api/admin/messages', { headers: { 'x-auth-token': token } });
+            if (res.ok) {
+                const data = await res.json();
+                setMessages(data);
+            }
+        } catch (err) {
+            console.error('Failed to fetch messages');
+        }
+    };
+
+    const deleteMessage = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this message?')) return;
+        try {
+            const res = await fetch(`/api/admin/messages/${id}`, { method: 'DELETE', headers: { 'x-auth-token': token } });
+            if (res.ok) {
+                setMessages(messages.filter(m => m._id !== id));
+                setStatus('Message deleted successfully.');
+            }
+        } catch (err) {
+            setStatus('Failed to delete message.');
+        }
+    };
 
     const fetchData = () => {
         fetch('/api/portfolio')
@@ -287,6 +317,45 @@ function Admin() {
                         {resumeUrl && <p style={{ fontSize: '13px', color: 'var(--success-color)' }}>✅ Active Resume is uploaded.</p>}
                     </form>
                 </div>
+            </div>
+
+            {/* INBOX */}
+            <div className="glass-card" style={{ marginTop: '24px', borderLeft: '6px solid var(--accent-primary)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <h3 className="section-title" style={{ marginBottom: '0' }}>📬 Private Inbox ({messages.length})</h3>
+                    <button type="button" onClick={fetchMessages} style={{ background: 'var(--icon-bg)', color: 'var(--accent-primary)', border: '1px solid var(--accent-primary)', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>↻ Refresh</button>
+                </div>
+                
+                {messages.length === 0 ? (
+                    <p style={{ color: 'var(--text-muted)' }}>No messages yet. They will appear here when recruiters submit the Contact Form.</p>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        {messages.map((msg) => (
+                            <div key={msg._id} style={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '20px', transition: 'all 0.2s ease' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+                                    <div>
+                                        <h4 style={{ color: 'var(--text-primary)', margin: '0 0 5px 0', fontSize: '18px' }}>{msg.subject}</h4>
+                                        <p style={{ color: 'var(--text-muted)', margin: '0', fontSize: '14px' }}>
+                                            <strong style={{color: 'var(--accent-primary)'}}>{msg.name}</strong> ({msg.email})
+                                        </p>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
+                                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                                            {new Date(msg.date).toLocaleString()}
+                                        </span>
+                                        <button type="button" onClick={() => deleteMessage(msg._id)} style={{ background: 'var(--danger-color)', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}>Delete</button>
+                                    </div>
+                                </div>
+                                <div style={{ marginTop: '15px', padding: '15px', background: 'var(--input-bg)', borderRadius: '8px', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                                    {msg.message}
+                                </div>
+                                <a href={`mailto:${msg.email}?subject=RE: ${encodeURIComponent(msg.subject)}`} className="project-link" style={{ marginTop: '15px', background: 'var(--icon-bg)', color: 'var(--accent-primary)' }}>
+                                    Reply via Email App ↗
+                                </a>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Admin Credentials */}

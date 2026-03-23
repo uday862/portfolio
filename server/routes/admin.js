@@ -62,10 +62,8 @@ router.put('/credentials', auth, async (req, res) => {
 // Upload Photo
 router.post('/upload-photo', auth, upload.single('photo'), async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded' });
-        }
-        const photoUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+        if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+        const photoUrl = `/uploads/${req.file.filename}`;
         
         let portfolio = await Portfolio.findOne();
         if (portfolio) {
@@ -73,6 +71,24 @@ router.post('/upload-photo', auth, upload.single('photo'), async (req, res) => {
             await portfolio.save();
         }
         res.json({ photoUrl });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Upload Resume
+router.post('/upload-resume', auth, upload.single('resume'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+        const resumeUrl = `/uploads/${req.file.filename}`;
+        
+        let portfolio = await Portfolio.findOne();
+        if (portfolio) {
+            portfolio.profile.resumeUrl = resumeUrl;
+            await portfolio.save();
+        }
+        res.json({ resumeUrl });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -112,6 +128,30 @@ router.put('/:section', auth, async (req, res) => {
         portfolio[section] = req.body;
         await portfolio.save();
         res.json(portfolio[section]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+const Message = require('../models/Message');
+
+// Get all messages
+router.get('/messages', auth, async (req, res) => {
+    try {
+        const messages = await Message.find().sort({ date: -1 });
+        res.json(messages);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Delete a message
+router.delete('/messages/:id', auth, async (req, res) => {
+    try {
+        await Message.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Message removed' });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
