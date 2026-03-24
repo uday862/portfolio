@@ -37,16 +37,33 @@ function Portfolio() {
   };
 
   useEffect(() => {
-    fetch('/api/portfolio')
-      .then(res => res.json())
-      .then(portfolioData => {
-        setData(portfolioData);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching data:', err);
-        setLoading(false);
-      });
+    const fetchPortfolio = () => {
+      fetch('/api/portfolio')
+        .then(res => res.json())
+        .then(portfolioData => {
+          setData(portfolioData);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching data:', err);
+          setLoading(false);
+        });
+    };
+
+    const hasVisited = localStorage.getItem('portfolioVisited');
+    if (!hasVisited) {
+      fetch('/api/visit', { method: 'POST' })
+        .then(() => {
+          localStorage.setItem('portfolioVisited', 'true');
+          fetchPortfolio();
+        })
+        .catch(err => {
+          console.error('Error logging visit:', err);
+          fetchPortfolio();
+        });
+    } else {
+      fetchPortfolio();
+    }
   }, []);
 
   if (loading) {
@@ -266,7 +283,10 @@ function Portfolio() {
         
         {/* Footer */}
         <footer style={{ textAlign: 'center', marginTop: '50px', padding: '20px', borderTop: '1px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '13px' }}>
-            <p>📄 Portfolio & up-to-date repositories: <a href="https://github.com/uday862" target="_blank" rel="noopener noreferrer" style={{color: 'var(--accent-primary)', textDecoration: 'none'}}>github.com/uday862</a> | LeetCode (450+ problems) | Open to Software Engineering Roles</p>
+            <p style={{ marginBottom: '15px' }}>📄 Portfolio & up-to-date repositories: <a href="https://github.com/uday862" target="_blank" rel="noopener noreferrer" style={{color: 'var(--accent-primary)', textDecoration: 'none'}}>github.com/uday862</a> | LeetCode (450+ problems) | Open to Software Engineering Roles</p>
+            <div style={{ display: 'inline-block', padding: '8px 16px', background: 'var(--card-bg)', border: '1px solid var(--accent-primary)', borderRadius: '30px', color: 'var(--text-primary)', fontWeight: 'bold' }}>
+              👁️ Unique Visitors: <span style={{ color: 'var(--accent-primary)' }}>{data.visitors !== undefined ? data.visitors : 0}</span>
+            </div>
         </footer>
       </main>
     </div>

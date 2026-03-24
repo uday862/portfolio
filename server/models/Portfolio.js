@@ -44,6 +44,7 @@ const PortfolioSchema = new mongoose.Schema({
     skills: [SkillCategorySchema],
     projects: [ProjectSchema],
     achievements: [AchievementSchema],
+    visitors: { type: Number, default: 0 },
     admin: {
         username: { type: String, default: 'admin' },
         password: { type: String, default: 'admin123' }

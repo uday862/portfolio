@@ -38,4 +38,16 @@ router.post('/contact', async (req, res) => {
     }
 });
 
+// POST /api/visit
+// Increment unique visitor count
+router.post('/visit', async (req, res) => {
+    try {
+        await Portfolio.updateOne({}, { $inc: { visitors: 1 } });
+        res.status(200).json({ message: 'Visit recorded' });
+    } catch (error) {
+        console.error('Error recording visit:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router;
