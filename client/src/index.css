@@ -261,6 +261,27 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(10px);
 }
 
+/* Timeline Dynamics */
+.timeline-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.timeline-dot {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.timeline-item:hover .timeline-card {
+  transform: translateX(10px) scale(1.02);
+  border-color: var(--accent-primary);
+  background: var(--card-hover) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+.timeline-item:hover .timeline-dot {
+  transform: scale(1.4);
+  background: var(--accent-secondary) !important;
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 20px var(--accent-secondary) !important;
+}
+
 @media (max-width: 768px) {
   .mobile-menu-btn {
     display: block;

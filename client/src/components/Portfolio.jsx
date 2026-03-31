@@ -117,28 +117,94 @@ function Portfolio() {
           
           {/* Hero Section */}
           {activeTab === 'Home' && (
-            <header className="hero glass-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px' }}>
-                <div className="profile-photo-container">
-                <div className="profile-photo-inner">
-                    <img src={avatarUrl} alt="Profile" className="profile-photo" style={{ transform: `scale(${zoomLevel})` }} />
+            <>
+            <header className="hero-split page-transition" style={{ marginBottom: '60px', position: 'relative' }}>
+                {/* Radiant Background Blobs */}
+                <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '400px', height: '400px', background: 'var(--accent-secondary)', opacity: '0.15', filter: 'blur(100px)', borderRadius: '50%', zIndex: -1 }}></div>
+                <div style={{ position: 'absolute', bottom: '-10%', left: '-5%', width: '300px', height: '300px', background: 'var(--accent-primary)', opacity: '0.15', filter: 'blur(80px)', borderRadius: '50%', zIndex: -1 }}></div>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap-reverse', alignItems: 'center', gap: '60px', background: 'var(--panel-bg)', backdropFilter: 'blur(20px)', border: '1px solid var(--border-color)', borderRadius: '24px', padding: '50px 40px', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}>
+                    
+                    {/* Left Typography Block */}
+                    <div style={{ flex: '1 1 400px' }}>
+                        <h2 style={{ fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '10px', fontWeight: '600' }}>Hello, I'm</h2>
+                        <h1 style={{ fontSize: '3.5rem', fontWeight: '800', lineHeight: '1.1', marginBottom: '15px', color: 'var(--text-primary)', letterSpacing: '-1px' }}>{data.profile.name}</h1>
+                        <h3 style={{ fontSize: '1.4rem', color: 'var(--accent-primary)', marginBottom: '25px', fontWeight: '500' }}>{data.profile.title}</h3>
+                        
+                        <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: '1.8', marginBottom: '40px', maxWidth: '500px' }}>{data.profile.summary}</p>
+                        
+                        <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '30px' }}>
+                            <button onClick={() => setActiveTab('Contact')} className="project-link" style={{ padding: '15px 35px', borderRadius: '12px', fontSize: '16px', background: 'var(--accent-secondary)', border: 'none', color: '#fff', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 10px 25px rgba(124, 58, 237, 0.3)' }}>Say Hello!</button>
+                            {data.profile.resumeUrl && (
+                                <a href={data.profile.resumeUrl} download target="_blank" rel="noopener noreferrer" className="project-link" style={{ padding: '15px 35px', borderRadius: '12px', fontSize: '16px', background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', boxShadow: 'none' }}>
+                                    📄 Download Resume
+                                </a>
+                            )}
+                        </div>
+
+                        {/* Social Links Bottom Left */}
+                        {data.profile.contacts && data.profile.contacts.length > 0 && (
+                            <div className="contact-links" style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
+                                {data.profile.contacts.map((contact, index) => (
+                                    <a key={index} href={contact.link && contact.link !== '#' ? contact.link : undefined} target="_blank" rel="noopener noreferrer" style={{ background: 'var(--icon-bg)', border: '1px solid var(--border-color)' }}>
+                                        <span className="icon" style={{marginRight: '6px'}}>{contact.icon}</span> {contact.text}
+                                    </a>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Right Portrait Block */}
+                    <div style={{ flex: '1 1 300px', display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                        <div style={{ width: '100%', maxWidth: '380px', aspectRatio: '4/5', borderRadius: '24px', overflow: 'hidden', border: '8px solid var(--bg-color)', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', position: 'relative', background: 'var(--card-bg)' }}>
+                            <img src={avatarUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${zoomLevel})` }} />
+                        </div>
+                    </div>
                 </div>
+
+                {/* Analytical Stats Row */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginTop: '30px' }}>
+                     <div className="glass-card" style={{ padding: '30px 20px', textAlign: 'center', borderRadius: '16px', background: 'var(--icon-bg)', border: '1px solid var(--border-color)' }}>
+                         <h2 style={{ fontSize: '2.5rem', color: 'var(--text-primary)', marginBottom: '5px' }}>{data.projects ? data.projects.length : 0}+</h2>
+                         <p style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Projects Completed</p>
+                     </div>
+                     <div className="glass-card" style={{ padding: '30px 20px', textAlign: 'center', borderRadius: '16px', background: 'var(--icon-bg)', border: '1px solid var(--border-color)' }}>
+                         <h2 style={{ fontSize: '2.5rem', color: 'var(--text-primary)', marginBottom: '5px' }}>{data.skills ? data.skills.length : 0}</h2>
+                         <p style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Technical Skills</p>
+                     </div>
+                     <div className="glass-card" style={{ padding: '30px 20px', textAlign: 'center', borderRadius: '16px', background: 'var(--icon-bg)', border: '1px solid var(--border-color)' }}>
+                         <h2 style={{ fontSize: '2.5rem', color: 'var(--text-primary)', marginBottom: '5px' }}>{data.visitors || 0}</h2>
+                         <p style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Profile Views</p>
+                     </div>
                 </div>
-                <h1 style={{ fontSize: '2.5rem', marginBottom: '10px', color: 'var(--text-primary)' }}>{data.profile.name}</h1>
-                <h2 style={{ color: 'var(--accent-primary)', marginBottom: '20px', fontSize: '1.2rem' }}>{data.profile.title}</h2>
-                <div className="contact-links" style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '15px' }}>
-                {data.profile.contacts && data.profile.contacts.map((contact, index) => (
-                    <a key={index} href={contact.link && contact.link !== '#' ? contact.link : undefined} target="_blank" rel="noopener noreferrer">
-                    <span className="icon" style={{marginRight: '6px'}}>{contact.icon}</span> {contact.text}
-                    </a>
-                ))}
-                {data.profile.resumeUrl && (
-                    <a href={data.profile.resumeUrl} download target="_blank" rel="noopener noreferrer" className="project-link" style={{ padding: '8px 20px', borderRadius: '30px' }}>
-                      📄 Download Resume
-                    </a>
-                )}
-                </div>
-                <p className="summary" style={{ textAlign: 'center', maxWidth: '700px', lineHeight: '1.8', color: 'var(--text-secondary)' }}>{data.profile.summary}</p>
             </header>
+            
+            {/* Journey Timeline on Home Tab */}
+            {data.education && data.education.length > 0 && (
+                <div className="glass-card page-transition" style={{ marginTop: '0', padding: '40px 30px', marginBottom: '40px' }}>
+                    <h2 className="section-title" style={{ textAlign: 'left', marginBottom: '30px' }}>My Journey</h2>
+                    <div style={{ position: 'relative', paddingLeft: '30px' }}>
+                        {/* Vertical Path Line */}
+                        <div style={{ position: 'absolute', left: '7px', top: '10px', bottom: '10px', width: '2px', background: 'var(--border-color)' }}></div>
+                        
+                        {data.education.map((edu, index) => (
+                            <div key={index} className="timeline-item" style={{ position: 'relative', marginBottom: index === data.education.length - 1 ? '0' : '40px' }}>
+                                {/* Glowing Milestone Dot */}
+                                <div className="timeline-dot" style={{ position: 'absolute', left: '-31.5px', top: '4px', width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-primary)', border: '3px solid var(--bg-color)', boxShadow: '0 0 10px rgba(96, 165, 250, 0.5)', zIndex: 2 }}></div>
+                                
+                                {/* Card Content */}
+                                <div className="timeline-card" style={{ background: 'var(--input-bg)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                                    <span style={{ display: 'inline-block', padding: '4px 12px', background: 'var(--icon-bg)', color: 'var(--accent-primary)', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', marginBottom: '12px' }}>{edu.year}</span>
+                                    <h3 style={{ color: 'var(--text-primary)', marginBottom: '8px', fontSize: '1.25rem' }}>{edu.degree}</h3>
+                                    <h4 style={{ color: 'var(--text-muted)', fontSize: '15px', fontWeight: '500' }}>{edu.institution}</h4>
+                                    {edu.score && <p style={{ color: 'var(--text-primary)', fontSize: '14px', marginTop: '10px', fontWeight: 'bold', background: 'var(--icon-bg)', display: 'inline-block', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--accent-primary)' }}>🏅 Score: {edu.score}</p>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+            </>
           )}
 
           {/* Education Section */}
