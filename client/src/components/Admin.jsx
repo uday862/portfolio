@@ -25,6 +25,12 @@ function Admin() {
     const [projects, setProjects] = useState([]);
     const [education, setEducation] = useState([]);
     const [skills, setSkills] = useState([]);
+    const [certificates, setCertificates] = useState([]);
+    
+    // Certificate Form
+    const [certTitle, setCertTitle] = useState('');
+    const [certDesc, setCertDesc] = useState('');
+    const [certImg, setCertImg] = useState(null);
     
     // Sub-forms
     const initContact = { icon: '', text: '', link: '' };
@@ -95,6 +101,7 @@ function Admin() {
                 setProjects(data.projects || []);
                 setEducation(data.education || []);
                 setSkills(data.skills || []);
+                setCertificates(data.certificates || []);
             });
     }
 
@@ -268,6 +275,47 @@ function Admin() {
     };
     const deleteSkill = (idx) => saveArrayData('skills', skills.filter((_, i) => i !== idx), setSkills);
     const startEditSkill = (idx) => { setEditSkillIdx(idx); setNewSkill(skills[idx]); };
+
+    const handleUploadCertificate = async (e) => {
+        e.preventDefault();
+        if (!certImg) return setStatus('Select a certificate image first');
+        setStatus('Uploading certificate...');
+        const formData = new FormData();
+        formData.append('image', certImg);
+        formData.append('title', certTitle);
+        formData.append('description', certDesc);
+        
+        try {
+            const res = await fetch('/api/admin/certificate', {
+                method: 'POST',
+                headers: { 'x-auth-token': token },
+                body: formData
+            });
+            if (res.ok) {
+                const updatedCerts = await res.json();
+                setCertificates(updatedCerts);
+                setStatus('Certificate uploaded successfully!');
+                setCertTitle(''); setCertDesc(''); setCertImg(null);
+                document.getElementById('certFileInput').value = '';
+            } else setStatus('Certificate upload failed');
+        } catch (err) {
+            setStatus('Certificate upload network error');
+        }
+    };
+
+    const deleteCertificate = async (id) => {
+        if (!window.confirm('Delete this certificate?')) return;
+        try {
+            const res = await fetch(`/api/admin/certificate/${id}`, { method: 'DELETE', headers: { 'x-auth-token': token } });
+            if (res.ok) {
+                const updatedCerts = await res.json();
+                setCertificates(updatedCerts);
+                setStatus('Certificate deleted.');
+            }
+        } catch (err) {
+            setStatus('Failed to delete certificate.');
+        }
+    };
 
     if (!token) {
         return (
@@ -517,6 +565,36 @@ function Admin() {
                         <textarea placeholder="Skills (comma separated)" value={newSkill.items} onChange={e => setNewSkill({...newSkill, items: e.target.value})} style={inputStyle} rows="3" required />
                         <button type="submit" className="project-link" style={{ border: 'none', cursor: 'pointer' }}>{editSkillIdx >= 0 ? "Update" : "+ Add"} Skills</button>
                         {editSkillIdx >= 0 && <button type="button" onClick={() => { setEditSkillIdx(-1); setNewSkill(initSkill); }} style={{ background: 'var(--text-muted)', cursor: 'pointer', padding: '10px', borderRadius: '6px', border: 'none', color: '#fff' }}>Cancel</button>}
+                    </form>
+                </div>
+                
+                {/* Certificates CRUD */}
+                <div className="glass-card" style={{ gridColumn: 'span 2' }}>
+                    <h3 className="section-title">Manage Certifications (Images)</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '20px' }}>
+                        {certificates.map((c) => (
+                            <div key={c._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--card-bg)', padding: '15px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                    <div style={{ width: '80px', height: '60px', borderRadius: '6px', overflow: 'hidden', background: '#000' }}>
+                                        <img src={c.imageUrl} alt="cert" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    </div>
+                                    <div>
+                                        <strong style={{ color: 'var(--text-primary)', display: 'block' }}>{c.title}</strong>
+                                        <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>{c.description}</span>
+                                    </div>
+                                </div>
+                                <button onClick={() => deleteCertificate(c._id)} style={{ background: 'var(--danger-color)', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', padding: '8px 16px' }}>Delete</button>
+                            </div>
+                        ))}
+                    </div>
+                    <form onSubmit={handleUploadCertificate} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '15px', background: 'var(--card-bg)', padding: '20px', borderRadius: '10px', border: '1px dashed var(--border-color)' }}>
+                        <div style={{ gridColumn: 'span 2' }}>
+                            <h4 style={{ color: 'var(--accent-primary)', marginBottom: '10px' }}>+ Add New Certificate</h4>
+                        </div>
+                        <input type="text" placeholder="Certificate Title (e.g. AWS Certified Architect)" value={certTitle} onChange={e => setCertTitle(e.target.value)} style={inputStyle} required />
+                        <input id="certFileInput" type="file" accept="image/*" onChange={(e) => setCertImg(e.target.files[0])} style={{ ...inputStyle, padding: '9px 12px' }} required />
+                        <textarea placeholder="Description or Issuer info..." value={certDesc} onChange={e => setCertDesc(e.target.value)} style={{ ...inputStyle, gridColumn: 'span 2' }} rows="3" required />
+                        <button type="submit" className="project-link" style={{ gridColumn: 'span 2', background: 'var(--success-color)', border: 'none', cursor: 'pointer', padding: '12px' }}>Upload Certificate</button>
                     </form>
                 </div>
             </div>

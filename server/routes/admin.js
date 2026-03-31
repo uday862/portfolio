@@ -113,6 +113,49 @@ router.put('/profile', auth, async (req, res) => {
     }
 });
 
+// Upload Certificate
+router.post('/certificate', auth, upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ message: 'No image uploaded' });
+        
+        const base64String = req.file.buffer.toString('base64');
+        const imageUrl = `data:${req.file.mimetype};base64,${base64String}`;
+        
+        let portfolio = await Portfolio.findOne();
+        if (!portfolio) portfolio = new Portfolio();
+        if (!portfolio.certificates) portfolio.certificates = [];
+        
+        portfolio.certificates.push({
+            title: req.body.title,
+            description: req.body.description,
+            imageUrl: imageUrl
+        });
+        
+        await portfolio.save();
+        res.json(portfolio.certificates);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Delete Certificate
+router.delete('/certificate/:id', auth, async (req, res) => {
+    try {
+        let portfolio = await Portfolio.findOne();
+        if (portfolio) {
+            portfolio.certificates = portfolio.certificates.filter(c => c._id.toString() !== req.params.id);
+            await portfolio.save();
+            res.json(portfolio.certificates);
+        } else {
+            res.status(404).json({ message: 'Not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
 // Update bulk array data (projects, skills, education, achievements)
 router.put('/:section', auth, async (req, res) => {
     const { section } = req.params;

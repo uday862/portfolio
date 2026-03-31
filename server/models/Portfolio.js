@@ -38,12 +38,19 @@ const AchievementSchema = new mongoose.Schema({
     description: String
 });
 
+const CertificateSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    imageUrl: String
+});
+
 const PortfolioSchema = new mongoose.Schema({
     profile: ProfileSchema,
     education: [EducationSchema],
     skills: [SkillCategorySchema],
     projects: [ProjectSchema],
     achievements: [AchievementSchema],
+    certificates: [CertificateSchema],
     visitors: { type: Number, default: 0 },
     admin: {
         username: { type: String, default: 'admin' },

@@ -78,7 +78,7 @@ function Portfolio() {
   const zoomLevel = data.profile.photoSize ? data.profile.photoSize / 100 : 1;
 
   const showSection = (sectionName) => activeTab === 'Home' || activeTab === sectionName;
-  const tabs = ['Home', 'Education', 'Skills', 'Projects', 'Achievements', 'Contact'];
+  const tabs = ['Home', 'Education', 'Skills', 'Projects', 'Certifications', 'Achievements', 'Contact'];
 
   return (
     <div className="portfolio-layout">
@@ -216,6 +216,26 @@ function Portfolio() {
                         ))}
                       </div>
                     )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Certifications Section */}
+          {showSection('Certifications') && data.certificates && data.certificates.length > 0 && (
+            <section className="glass-card page-transition" style={{ marginTop: activeTab!=='Home' ? '0' : '40px', marginBottom: '40px' }}>
+              <h2 className="section-title">Certifications</h2>
+              <div className="grid-2">
+                {data.certificates.map((cert) => (
+                  <div key={cert._id} className="project-card" style={{ background: 'var(--card-bg)', borderRadius: '12px', border: '1px solid var(--border-color)', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: '220px', background: '#09090b', position: 'relative' }}>
+                        <img src={cert.imageUrl} alt={cert.title} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 1 }} />
+                    </div>
+                    <div style={{ padding: '24px' }}>
+                        <h3 style={{ color: 'var(--accent-primary)', marginBottom: '8px', fontSize: '18px' }}>{cert.title}</h3>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.6' }}>{cert.description}</p>
+                    </div>
                   </div>
                 ))}
               </div>
