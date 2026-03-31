@@ -59,6 +59,14 @@ function Admin() {
         }
     }, [token]);
 
+    // Auto-clear global status toaster
+    useEffect(() => {
+        if (status) {
+            const timer = setTimeout(() => setStatus(''), 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [status]);
+
     const fetchMessages = async () => {
         try {
             const res = await fetch('/api/admin/messages', { headers: { 'x-auth-token': token } });
@@ -328,7 +336,12 @@ function Admin() {
                         <input type="password" placeholder="Password" value={loginPass} onChange={(e) => setLoginPass(e.target.value)} style={inputStyle} />
                         <button type="submit" className="project-link" style={{ textAlign: 'center', border: 'none', cursor: 'pointer' }}>Secure Login</button>
                     </form>
-                    {status && <p style={{ marginTop: '15px', color: 'var(--danger-color)', textAlign: 'center', fontWeight: 'bold' }}>{status}</p>}
+                    {status && (
+                        <div style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', background: (status.toLowerCase().includes('fail') || status.toLowerCase().includes('error') || status.toLowerCase().includes('invalid') || status.toLowerCase().includes('select')) ? 'var(--danger-color)' : (status.includes('Uploading') || status.includes('Saving')) ? 'var(--accent-primary)' : 'var(--success-color)', color: '#fff', padding: '16px 32px', borderRadius: '30px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', zIndex: 9999, fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setStatus('')}>
+                            <span>{(status.toLowerCase().includes('fail') || status.toLowerCase().includes('error') || status.toLowerCase().includes('invalid') || status.toLowerCase().includes('select')) ? '❌' : (status.includes('Uploading') || status.includes('Saving')) ? '⏳' : '✅'}</span>
+                            <span style={{ letterSpacing: '0.5px' }}>{status}</span>
+                        </div>
+                    )}
                 </div>
             </div>
         );
@@ -344,7 +357,12 @@ function Admin() {
                 <button onClick={() => { setToken(null); localStorage.removeItem('adminToken'); }} className="project-link" style={{ background: 'var(--danger-color)', border: 'none', cursor: 'pointer' }}>Logout</button>
             </div>
             
-            {status && <p style={{ padding: '15px', background: 'var(--icon-bg)', border: '1px solid var(--accent-primary)', color: 'var(--accent-primary)', borderRadius: '8px', marginBottom: '20px', fontWeight: 'bold' }}>ℹ️ {status}</p>}
+            {status && (
+                <div style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', background: (status.toLowerCase().includes('fail') || status.toLowerCase().includes('error') || status.toLowerCase().includes('invalid') || status.toLowerCase().includes('select')) ? 'var(--danger-color)' : (status.includes('Uploading') || status.includes('Saving')) ? 'var(--accent-primary)' : 'var(--success-color)', color: '#fff', padding: '16px 32px', borderRadius: '30px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', zIndex: 9999, fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', transition: 'all 0.3s ease' }} onClick={() => setStatus('')}>
+                    <span>{(status.toLowerCase().includes('fail') || status.toLowerCase().includes('error') || status.toLowerCase().includes('invalid') || status.toLowerCase().includes('select')) ? '❌' : (status.includes('Uploading') || status.includes('Saving')) ? '⏳' : '✅'}</span>
+                    <span style={{ letterSpacing: '0.5px' }}>{status}</span>
+                </div>
+            )}
 
             <div className="grid-2">
                 {/* Photo Upload */}
