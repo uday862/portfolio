@@ -36,6 +36,30 @@ function Portfolio() {
     setIsSubmitting(false);
   };
 
+  // Built-in Mini Game State
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [isXNext, setIsXNext] = useState(true);
+  const [gameWinner, setGameWinner] = useState(null);
+  const checkWinner = (squares) => {
+      const lines = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] ];
+      for (let i=0; i<lines.length; i++) {
+          const [a,b,c] = lines[i];
+          if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) return squares[a];
+      }
+      return null;
+  }
+  const handleCellClick = (i) => {
+      if (board[i] || gameWinner) return;
+      const newBoard = [...board];
+      newBoard[i] = isXNext ? 'X' : 'O';
+      setBoard(newBoard);
+      setIsXNext(!isXNext);
+      const win = checkWinner(newBoard);
+      if(win) setGameWinner(win);
+      else if(!newBoard.includes(null)) setGameWinner('Draw');
+  }
+  const resetGame = () => { setBoard(Array(9).fill(null)); setIsXNext(true); setGameWinner(null); }
+
   useEffect(() => {
     const fetchPortfolio = () => {
       fetch('/api/portfolio')
@@ -77,43 +101,52 @@ function Portfolio() {
   const avatarUrl = data.profile.photoUrl || "https://ui-avatars.com/api/?name=Gadige+Uday+Kumar&background=3b82f6&color=fff&size=200";
   const zoomLevel = data.profile.photoSize ? data.profile.photoSize / 100 : 1;
 
-  const showSection = (sectionName) => activeTab === 'Home' || activeTab === sectionName;
-  const tabs = ['Home', 'Education', 'Skills', 'Projects', 'Certifications', 'Achievements', 'Contact'];
+  const showSection = (sectionName) => activeTab === sectionName;
+  const tabs = ['Home', 'Education', 'Skills', 'Projects', 'Certifications', 'Achievements', 'Game', 'Contact'];
 
   return (
     <div className="portfolio-layout">
-      {/* Mobile Menu Toggle */}
-      <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-        {isMobileMenuOpen ? '✕' : '☰'}
-      </button>
-
-      {/* Side Navigation Bar */}
+      {/* Top Navigation Bar */}
       <nav className={`side-nav ${isMobileMenuOpen ? 'open' : ''}`}>
-        <div style={{ padding: '0 10px 30px', borderBottom: '1px solid var(--border-color)', marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '24px', margin: '0', background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '1px', fontWeight: '800' }}>Portfolio.</h2>
-            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '1px' }}>{data.profile.name}</p>
+        <div className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--accent-secondary)', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#fff', fontWeight: 'bold', fontSize: '20px' }}>
+                {data.profile.name ? data.profile.name.charAt(0) : 'B'}
+            </div>
+            <h2 style={{ fontSize: '22px', margin: '0', color: 'var(--text-primary)', fontWeight: '800' }}>{data.profile.name ? data.profile.name.split(' ')[0] : 'Portfolio'}</h2>
         </div>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-            {tabs.map(tab => (
-                <button 
-                  key={tab} 
-                  onClick={() => { setActiveTab(tab); setIsMobileMenuOpen(false); }} 
-                  className={`nav-item ${activeTab === tab ? 'active' : ''}`}
-                >
-                  {tab}
-                </button>
-            ))}
+        <div className="nav-links" style={{ display: 'flex', flexDirection: 'row', gap: '5px', alignItems: 'center' }}>
+            {tabs.map(tab => {
+                if(tab === 'Contact') return null;
+                return (
+                    <button 
+                    key={tab} 
+                    onClick={() => { setActiveTab(tab); setIsMobileMenuOpen(false); }} 
+                    className={`nav-item ${activeTab === tab ? 'active' : ''}`}
+                    >
+                    {tab}
+                    </button>
+                );
+            })}
+            <button 
+                onClick={() => { setActiveTab('Contact'); setIsMobileMenuOpen(false); }} 
+                className={`nav-item ${activeTab === 'Contact' ? 'active' : ''}`}
+                style={{ background: 'var(--accent-secondary)', color: '#fff', padding: '10px 24px', marginLeft: '10px' }}
+            >
+                Contact
+            </button>
+            <Link to="/admin" className="nav-item" style={{marginLeft: '15px', background: 'var(--card-bg)', border: '1px solid var(--border-color)', color: 'var(--text-muted)', padding: '10px 15px', textDecoration: 'none', display: 'flex', alignItems: 'center'}}>⚙️ Admin</Link>
         </div>
 
-        <div style={{ paddingTop: '20px', borderTop: '1px solid var(--border-color)' }}>
-            <Link to="/admin" className="nav-item" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'var(--card-bg)', color: 'var(--text-muted)', textDecoration: 'none'}}>⚙️ Admin Login</Link>
-        </div>
+        {/* Mobile Menu Toggle inside Nav */}
+        <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? '✕' : '☰'}
+        </button>
       </nav>
 
       {/* Main Content Area */}
       <main className="portfolio-content" onClick={() => { if(isMobileMenuOpen) setIsMobileMenuOpen(false); }}>
-        <div key={activeTab} className="app-container page-transition" style={{ margin: '0 auto', maxWidth: '900px', padding: '0 20px' }}>
+        <div key={activeTab} className="app-container page-transition" style={{ margin: '0 auto', maxWidth: '1300px', padding: '0 20px' }}>
           
           {/* Hero Section */}
           {activeTab === 'Home' && (
@@ -178,46 +211,32 @@ function Portfolio() {
                      </div>
                 </div>
             </header>
-            
-            {/* Journey Timeline on Home Tab */}
-            {data.education && data.education.length > 0 && (
-                <div className="glass-card page-transition" style={{ marginTop: '0', padding: '40px 30px', marginBottom: '40px' }}>
-                    <h2 className="section-title" style={{ textAlign: 'left', marginBottom: '30px' }}>My Journey</h2>
-                    <div style={{ position: 'relative', paddingLeft: '30px' }}>
-                        {/* Vertical Path Line */}
-                        <div style={{ position: 'absolute', left: '7px', top: '10px', bottom: '10px', width: '2px', background: 'var(--border-color)' }}></div>
-                        
-                        {data.education.map((edu, index) => (
-                            <div key={index} className="timeline-item" style={{ position: 'relative', marginBottom: index === data.education.length - 1 ? '0' : '40px' }}>
-                                {/* Glowing Milestone Dot */}
-                                <div className="timeline-dot" style={{ position: 'absolute', left: '-31.5px', top: '4px', width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-primary)', border: '3px solid var(--bg-color)', boxShadow: '0 0 10px rgba(96, 165, 250, 0.5)', zIndex: 2 }}></div>
-                                
-                                {/* Card Content */}
-                                <div className="timeline-card" style={{ background: 'var(--input-bg)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                                    <span style={{ display: 'inline-block', padding: '4px 12px', background: 'var(--icon-bg)', color: 'var(--accent-primary)', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', marginBottom: '12px' }}>{edu.year}</span>
-                                    <h3 style={{ color: 'var(--text-primary)', marginBottom: '8px', fontSize: '1.25rem' }}>{edu.degree}</h3>
-                                    <h4 style={{ color: 'var(--text-muted)', fontSize: '15px', fontWeight: '500' }}>{edu.institution}</h4>
-                                    {edu.score && <p style={{ color: 'var(--text-primary)', fontSize: '14px', marginTop: '10px', fontWeight: 'bold', background: 'var(--icon-bg)', display: 'inline-block', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--accent-primary)' }}>🏅 Score: {edu.score}</p>}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
             </>
           )}
 
           {/* Education Section */}
           {showSection('Education') && data.education && data.education.length > 0 && (
-            <section className="glass-card" style={{ marginTop: activeTab!=='Home' ? '0' : '40px' }}>
-              <h2 className="section-title">Academic Background</h2>
-              {data.education.map((edu, index) => (
-                <div key={index} className="education-item" style={{ marginBottom: '15px' }}>
-                  <h3 style={{ color: 'var(--accent-primary)', marginBottom: '5px' }}>{edu.degree}</h3>
-                  <p style={{ color: 'var(--text-primary)', fontWeight: '500' }}>{edu.institution}</p>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{edu.year} {edu.score ? `| ${edu.score}` : ''}</p>
-                </div>
-              ))}
+            <section className="glass-card page-transition" style={{ marginTop: '0', marginBottom: '40px', padding: '40px 30px' }}>
+              <h2 className="section-title" style={{ textAlign: 'left', marginBottom: '30px' }}>My Educational Journey</h2>
+              <div style={{ position: 'relative', paddingLeft: '30px' }}>
+                  {/* Vertical Path Line */}
+                  <div style={{ position: 'absolute', left: '7px', top: '10px', bottom: '10px', width: '2px', background: 'var(--border-color)' }}></div>
+                  
+                  {data.education.map((edu, index) => (
+                      <div key={index} className="timeline-item" style={{ position: 'relative', marginBottom: index === data.education.length - 1 ? '0' : '40px' }}>
+                          {/* Glowing Milestone Dot */}
+                          <div className="timeline-dot" style={{ position: 'absolute', left: '-31.5px', top: '4px', width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-primary)', border: '3px solid var(--bg-color)', boxShadow: '0 0 10px rgba(96, 165, 250, 0.5)', zIndex: 2 }}></div>
+                          
+                          {/* Card Content */}
+                          <div className="timeline-card" style={{ background: 'var(--input-bg)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                              <span style={{ display: 'inline-block', padding: '4px 12px', background: 'var(--icon-bg)', color: 'var(--accent-primary)', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', marginBottom: '12px' }}>{edu.year}</span>
+                              <h3 style={{ color: 'var(--text-primary)', marginBottom: '8px', fontSize: '1.25rem' }}>{edu.degree}</h3>
+                              <h4 style={{ color: 'var(--text-muted)', fontSize: '15px', fontWeight: '500' }}>{edu.institution}</h4>
+                              {edu.score && <p style={{ color: 'var(--text-primary)', fontSize: '14px', marginTop: '10px', fontWeight: 'bold', background: 'var(--icon-bg)', display: 'inline-block', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--accent-primary)' }}>🏅 Score: {edu.score}</p>}
+                          </div>
+                      </div>
+                  ))}
+              </div>
             </section>
           )}
 
@@ -323,6 +342,40 @@ function Portfolio() {
                   </li>
                 ))}
               </ul>
+            </section>
+          )}
+
+          {/* Tic-Tac-Toe Game Section */}
+          {showSection('Game') && (
+            <section className="glass-card page-transition" style={{ marginTop: '0', marginBottom: '40px', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <h2 className="section-title">Neon Tic-Tac-Toe</h2>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: '30px', textAlign: 'center', maxWidth: '400px' }}>Take a break and test your logic against a friend or just practice. First to align 3 symbols wins!</p>
+                
+                <div style={{ marginBottom: '20px', fontSize: '1.2rem', fontWeight: 'bold', padding: '10px 20px', borderRadius: '12px', background: 'var(--icon-bg)', color: gameWinner === 'Draw' ? 'var(--text-muted)' : (gameWinner ? 'var(--success-color)' : 'var(--accent-primary)'), border: `1px solid ${gameWinner ? 'var(--success-color)' : 'var(--border-color)'}` }}>
+                    {gameWinner ? (gameWinner === 'Draw' ? 'Match Draw!' : `Winner: Player ${gameWinner}! 🏆`) : `Current Player: ${isXNext ? 'X' : 'O'}`}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 100px)', gap: '10px', background: 'var(--border-color)', padding: '10px', borderRadius: '16px' }}>
+                    {board.map((cell, i) => (
+                        <button 
+                            key={i} 
+                            onClick={() => handleCellClick(i)} 
+                            style={{ 
+                                width: '100px', height: '100px', 
+                                background: 'var(--bg-color)', border: 'none', borderRadius: '8px',
+                                fontSize: '3rem', fontWeight: '800', cursor: cell || gameWinner ? 'default' : 'pointer',
+                                color: cell === 'X' ? 'var(--accent-primary)' : 'var(--accent-secondary)',
+                                transition: 'all 0.3s ease',
+                                boxShadow: cell ? `inset 0 0 15px ${cell === 'X' ? 'rgba(96, 165, 250, 0.2)' : 'rgba(167, 139, 250, 0.2)'}` : 'none'
+                            }}
+                            className="game-cell"
+                        >
+                            {cell}
+                        </button>
+                    ))}
+                </div>
+
+                <button onClick={resetGame} className="project-link" style={{ marginTop: '40px', padding: '12px 30px', borderRadius: '20px', fontSize: '1.1rem', background: 'var(--card-bg)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', boxShadow: 'none' }}>🔄 Rematch</button>
             </section>
           )}
 
