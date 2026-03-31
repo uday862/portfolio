@@ -229,8 +229,8 @@ function Portfolio() {
               <div className="grid-2">
                 {data.certificates.map((cert) => (
                   <div key={cert._id} className="project-card" style={{ background: 'var(--card-bg)', borderRadius: '12px', border: '1px solid var(--border-color)', overflow: 'hidden' }}>
-                    <div style={{ width: '100%', height: '220px', background: '#09090b', position: 'relative' }}>
-                        <img src={cert.imageUrl} alt={cert.title} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 1 }} />
+                    <div style={{ width: '100%', height: '300px', background: 'var(--bg-color)', position: 'relative', borderBottom: '1px solid var(--border-color)' }}>
+                        <img src={cert.imageUrl} alt={cert.title} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '15px', boxSizing: 'border-box' }} />
                     </div>
                     <div style={{ padding: '24px' }}>
                         <h3 style={{ color: 'var(--accent-primary)', marginBottom: '8px', fontSize: '18px' }}>{cert.title}</h3>
