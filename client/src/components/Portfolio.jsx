@@ -156,10 +156,10 @@ function Portfolio() {
                 <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '400px', height: '400px', background: 'var(--accent-secondary)', opacity: '0.15', filter: 'blur(100px)', borderRadius: '50%', zIndex: -1 }}></div>
                 <div style={{ position: 'absolute', bottom: '-10%', left: '-5%', width: '300px', height: '300px', background: 'var(--accent-primary)', opacity: '0.15', filter: 'blur(80px)', borderRadius: '50%', zIndex: -1 }}></div>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap-reverse', alignItems: 'center', gap: '60px', background: 'var(--panel-bg)', backdropFilter: 'blur(20px)', border: '1px solid var(--border-color)', borderRadius: '24px', padding: '50px 40px', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}>
+                <div className="hero-card">
                     
                     {/* Left Typography Block */}
-                    <div style={{ flex: '1 1 400px' }}>
+                    <div className="hero-text-block">
                         <h2 style={{ fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '10px', fontWeight: '600' }}>Hello, I'm</h2>
                         <h1 style={{ fontSize: '3.5rem', fontWeight: '800', lineHeight: '1.1', marginBottom: '15px', color: 'var(--text-primary)', letterSpacing: '-1px' }}>{data.profile.name}</h1>
                         <h3 style={{ fontSize: '1.4rem', color: 'var(--accent-primary)', marginBottom: '25px', fontWeight: '500' }}>{data.profile.title}</h3>
@@ -188,7 +188,7 @@ function Portfolio() {
                     </div>
 
                     {/* Right Portrait Block */}
-                    <div style={{ flex: '1 1 300px', display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                    <div className="hero-image-block">
                         <div style={{ width: '100%', maxWidth: '380px', aspectRatio: '4/5', borderRadius: '24px', overflow: 'hidden', border: '8px solid var(--bg-color)', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', position: 'relative', background: 'var(--card-bg)' }}>
                             <img src={avatarUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${zoomLevel})` }} />
                         </div>
@@ -355,7 +355,7 @@ function Portfolio() {
                     {gameWinner ? (gameWinner === 'Draw' ? 'Match Draw!' : `Winner: Player ${gameWinner}! 🏆`) : `Current Player: ${isXNext ? 'X' : 'O'}`}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 100px)', gap: '10px', background: 'var(--border-color)', padding: '10px', borderRadius: '16px' }}>
+                <div className="game-grid">
                     {board.map((cell, i) => (
                         <button 
                             key={i} 
@@ -386,7 +386,7 @@ function Portfolio() {
               <p style={{ color: 'var(--text-secondary)', marginBottom: '25px' }}>Interested in working together or have a question? Feel free to drop a message below. I monitor this inbox actively.</p>
               
               <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
+                <div className="contact-grid">
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <label style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '500' }}>Your Name</label>
                     <input type="text" value={contactName} onChange={e => setContactName(e.target.value)} required style={{ padding: '14px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-primary)', outline: 'none' }} placeholder="John Doe" />
