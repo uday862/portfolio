@@ -285,25 +285,31 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 20px var(--accent-secondary) !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1150px) {
   .mobile-menu-btn {
     display: block;
   }
-  .portfolio-layout {
-    flex-direction: column;
-  }
   .side-nav {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 280px;
-    height: 100vh;
-    transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 999;
+    padding: 0 20px;
   }
-  .side-nav.open {
+  .nav-links {
+    position: fixed;
+    top: 80px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background: var(--nav-bg);
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    padding: 40px 20px;
+    transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    gap: 10px !important;
+    overflow-y: auto;
+  }
+  .side-nav.open .nav-links {
     left: 0;
-    box-shadow: 10px 0 30px rgba(0,0,0,0.2);
   }
   .portfolio-content {
     margin-left: 0;

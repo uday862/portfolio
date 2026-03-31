@@ -115,7 +115,7 @@ function Portfolio() {
             <h2 style={{ fontSize: '22px', margin: '0', color: 'var(--text-primary)', fontWeight: '800' }}>{data.profile.name ? data.profile.name.split(' ')[0] : 'Portfolio'}</h2>
         </div>
         
-        <div className="nav-links" style={{ display: 'flex', flexDirection: 'row', gap: '5px', alignItems: 'center' }}>
+        <div className="nav-links" style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
             {tabs.map(tab => {
                 if(tab === 'Contact') return null;
                 return (
@@ -131,11 +131,11 @@ function Portfolio() {
             <button 
                 onClick={() => { setActiveTab('Contact'); setIsMobileMenuOpen(false); }} 
                 className={`nav-item ${activeTab === 'Contact' ? 'active' : ''}`}
-                style={{ background: 'var(--accent-secondary)', color: '#fff', padding: '10px 24px', marginLeft: '10px' }}
+                style={{ background: 'var(--accent-secondary)', color: '#fff', padding: '10px 24px' }}
             >
                 Contact
             </button>
-            <Link to="/admin" className="nav-item" style={{marginLeft: '15px', background: 'var(--card-bg)', border: '1px solid var(--border-color)', color: 'var(--text-muted)', padding: '10px 15px', textDecoration: 'none', display: 'flex', alignItems: 'center'}}>⚙️ Admin</Link>
+            <Link to="/admin" className="nav-item" style={{background: 'var(--card-bg)', border: '1px solid var(--border-color)', color: 'var(--text-muted)', padding: '10px 15px', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>⚙️ Admin</Link>
         </div>
 
         {/* Mobile Menu Toggle inside Nav */}
