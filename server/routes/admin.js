@@ -139,6 +139,31 @@ router.post('/certificate', auth, upload.single('image'), async (req, res) => {
     }
 });
 
+// Edit Certificate
+router.put('/certificate/:id', auth, upload.single('image'), async (req, res) => {
+    try {
+        let portfolio = await Portfolio.findOne();
+        if (!portfolio) return res.status(404).json({ message: 'Not found' });
+        
+        const certIndex = portfolio.certificates.findIndex(c => c._id.toString() === req.params.id);
+        if (certIndex === -1) return res.status(404).json({ message: 'Certificate not found' });
+        
+        if (req.body.title) portfolio.certificates[certIndex].title = req.body.title;
+        if (req.body.description) portfolio.certificates[certIndex].description = req.body.description;
+        
+        if (req.file) {
+            const base64String = req.file.buffer.toString('base64');
+            portfolio.certificates[certIndex].imageUrl = `data:${req.file.mimetype};base64,${base64String}`;
+        }
+        
+        await portfolio.save();
+        res.json(portfolio.certificates);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
 // Delete Certificate
 router.delete('/certificate/:id', auth, async (req, res) => {
     try {

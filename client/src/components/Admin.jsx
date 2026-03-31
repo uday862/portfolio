@@ -31,6 +31,7 @@ function Admin() {
     const [certTitle, setCertTitle] = useState('');
     const [certDesc, setCertDesc] = useState('');
     const [certImg, setCertImg] = useState(null);
+    const [editCertId, setEditCertId] = useState(null);
     
     // Sub-forms
     const initContact = { icon: '', text: '', link: '' };
@@ -286,29 +287,50 @@ function Admin() {
 
     const handleUploadCertificate = async (e) => {
         e.preventDefault();
-        if (!certImg) return setStatus('Select a certificate image first');
-        setStatus('Uploading certificate...');
+        if (!editCertId && !certImg) return setStatus('Select a certificate image first');
+        
+        setStatus(editCertId ? 'Updating certificate...' : 'Uploading certificate...');
         const formData = new FormData();
-        formData.append('image', certImg);
+        if (certImg) formData.append('image', certImg);
         formData.append('title', certTitle);
         formData.append('description', certDesc);
         
+        const url = editCertId ? `/api/admin/certificate/${editCertId}` : '/api/admin/certificate';
+        const method = editCertId ? 'PUT' : 'POST';
+
         try {
-            const res = await fetch('/api/admin/certificate', {
-                method: 'POST',
+            const res = await fetch(url, {
+                method,
                 headers: { 'x-auth-token': token },
                 body: formData
             });
             if (res.ok) {
                 const updatedCerts = await res.json();
                 setCertificates(updatedCerts);
-                setStatus('Certificate uploaded successfully!');
-                setCertTitle(''); setCertDesc(''); setCertImg(null);
-                document.getElementById('certFileInput').value = '';
-            } else setStatus('Certificate upload failed');
+                setStatus(`Certificate ${editCertId ? 'updated' : 'uploaded'} successfully!`);
+                cancelEditCertificate();
+            } else setStatus(`Certificate ${editCertId ? 'update' : 'upload'} failed`);
         } catch (err) {
-            setStatus('Certificate upload network error');
+            setStatus('Certificate network error');
         }
+    };
+
+    const startEditCertificate = (c) => {
+        setEditCertId(c._id);
+        setCertTitle(c.title);
+        setCertDesc(c.description);
+        setCertImg(null);
+        const fileInput = document.getElementById('certFileInput');
+        if (fileInput) fileInput.value = '';
+    };
+
+    const cancelEditCertificate = () => {
+        setEditCertId(null);
+        setCertTitle(''); 
+        setCertDesc(''); 
+        setCertImg(null);
+        const fileInput = document.getElementById('certFileInput');
+        if (fileInput) fileInput.value = '';
     };
 
     const deleteCertificate = async (id) => {
@@ -601,18 +623,24 @@ function Admin() {
                                         <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>{c.description}</span>
                                     </div>
                                 </div>
-                                <button onClick={() => deleteCertificate(c._id)} style={{ background: 'var(--danger-color)', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', padding: '8px 16px' }}>Delete</button>
+                                <div style={{ display: 'flex', gap: '5px' }}>
+                                    <button onClick={() => startEditCertificate(c)} style={{ background: 'var(--accent-primary)', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', padding: '8px 16px' }}>Edit</button>
+                                    <button onClick={() => deleteCertificate(c._id)} style={{ background: 'var(--danger-color)', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', padding: '8px 16px' }}>Del</button>
+                                </div>
                             </div>
                         ))}
                     </div>
                     <form onSubmit={handleUploadCertificate} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '15px', background: 'var(--card-bg)', padding: '20px', borderRadius: '10px', border: '1px dashed var(--border-color)' }}>
                         <div style={{ gridColumn: 'span 2' }}>
-                            <h4 style={{ color: 'var(--accent-primary)', marginBottom: '10px' }}>+ Add New Certificate</h4>
+                            <h4 style={{ color: 'var(--accent-primary)', marginBottom: '10px' }}>{editCertId ? "✏️ Edit Certificate" : "+ Add New Certificate"}</h4>
                         </div>
                         <input type="text" placeholder="Certificate Title (e.g. AWS Certified Architect)" value={certTitle} onChange={e => setCertTitle(e.target.value)} style={inputStyle} required />
-                        <input id="certFileInput" type="file" accept="image/*" onChange={(e) => setCertImg(e.target.files[0])} style={{ ...inputStyle, padding: '9px 12px' }} required />
+                        <input id="certFileInput" type="file" accept="image/*" onChange={(e) => setCertImg(e.target.files[0])} style={{ ...inputStyle, padding: '9px 12px' }} required={!editCertId} />
                         <textarea placeholder="Description or Issuer info..." value={certDesc} onChange={e => setCertDesc(e.target.value)} style={{ ...inputStyle, gridColumn: 'span 2' }} rows="3" required />
-                        <button type="submit" className="project-link" style={{ gridColumn: 'span 2', background: 'var(--success-color)', border: 'none', cursor: 'pointer', padding: '12px' }}>Upload Certificate</button>
+                        <button type="submit" className="project-link" style={{ gridColumn: 'span 2', background: 'var(--success-color)', border: 'none', cursor: 'pointer', padding: '12px' }}>{editCertId ? "Update Certificate" : "Upload Certificate"}</button>
+                        {editCertId && (
+                            <button type="button" onClick={cancelEditCertificate} className="project-link" style={{ gridColumn: 'span 2', background: 'var(--text-muted)', border: 'none', cursor: 'pointer', padding: '12px' }}>Cancel Edit</button>
+                        )}
                     </form>
                 </div>
             </div>
